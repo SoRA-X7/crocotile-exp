@@ -1,0 +1,14 @@
+{
+  "name": "crocotile-frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "app": "pnpm -F \"app\"",
+    "web": "pnpm -F \"web\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": true
+}
