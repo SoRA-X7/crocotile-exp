@@ -10,6 +10,7 @@ importers:
 
   web:
     specifiers:
+      '@mdi/font': ^7.4.47
       '@msgpack/msgpack': 3.0.0-beta2
       '@rushstack/eslint-patch': ^1.3.3
       '@tsconfig/node18': ^18.2.2
@@ -43,6 +44,7 @@ importers:
       vue-router: 4.2.5_vue@3.3.9
       vuetify: 3.4.4_typescript@5.2.2+vue@3.3.9
     devDependencies:
+      '@mdi/font': 7.4.47
       '@rushstack/eslint-patch': 1.6.0
       '@tsconfig/node18': 18.2.2
       '@types/dom-serial': 1.0.6
@@ -403,6 +405,10 @@ packages:
 
   /@jridgewell/sourcemap-codec/1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
+
+  /@mdi/font/7.4.47:
+    resolution: {integrity: sha512-43MtGpd585SNzHZPcYowu/84Vz2a2g31TvPMTm9uTiCSWzaheQySUcSyUH/46fPnuPQWof2yd0pGBtzee/IQWw==}
+    dev: true
 
   /@msgpack/msgpack/3.0.0-beta2:
     resolution: {integrity: sha512-y+l1PNV0XDyY8sM3YtuMLK5vE3/hkfId+Do8pLo/OPxfxuFAUwcGz3oiiUuV46/aBpwTzZ+mRWVMtlSKbradhw==}
