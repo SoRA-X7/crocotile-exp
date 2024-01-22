@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 import SerialMonitor from '@/components/SerialMonitor.vue';
+import ConnectionButton from '@/components/buttons/ConnectionButton.vue';
 import { useCrocotile } from '@/states/crocotile';
 
 const openSerialMonitor = ref(false);
@@ -13,10 +14,7 @@ const crocotile = useCrocotile();
   <v-layout>
     <v-app-bar>
       <v-app-bar-title>Experiment Environment</v-app-bar-title>
-      <v-btn icon>
-        <v-icon v-if="crocotile.online" icon="mdi-link-on" color="green" />
-        <v-icon v-else icon="mdi-link-off" color="red" />
-      </v-btn>
+      <ConnectionButton />
       <v-btn icon @click="openSerialMonitor = true">
         <v-icon icon="mdi-serial-port"></v-icon>
       </v-btn>
@@ -29,10 +27,7 @@ const crocotile = useCrocotile();
         <v-toolbar dark :elevation="8" color="primary">
           <v-toolbar-title>Serial Monitor</v-toolbar-title>
           <v-spacer />
-          <v-btn icon>
-            <v-icon v-if="crocotile.online" icon="mdi-link-on" color="green" />
-            <v-icon v-else icon="mdi-link-off" color="red" />
-          </v-btn>
+          <ConnectionButton />
           <v-btn icon dark @click="openSerialMonitor = false">
             <v-icon icon="mdi-close" />
           </v-btn>
