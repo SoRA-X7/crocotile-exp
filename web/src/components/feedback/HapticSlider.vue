@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useEventListener, useIntervalFn, useMouseInElement } from '@vueuse/core';
-import { encode } from '@msgpack/msgpack';
-import { calculateHapticPattern, type HapticPattern } from '@/models/hapticPattern';
+import { calculateLinearHapticPattern } from '@/models/hapticPattern';
 import { useCrocotile } from '@/states/crocotile';
 import { watchEffect } from 'vue';
 
@@ -19,7 +18,7 @@ const emit = defineEmits<{
 const crocotile = useCrocotile();
 
 const sliderEl = ref<HTMLElement>();
-const { elementX, elementWidth } = useMouseInElement(sliderEl);
+const { elementX, elementY, elementWidth, elementHeight } = useMouseInElement(sliderEl);
 const active = ref(false);
 const mousePosOnStart = ref(0);
 const timer = useIntervalFn(revisePosition, 400, { immediate: false });
@@ -34,9 +33,11 @@ useEventListener(window, 'mouseup', (e) => {
 
 function startPattern() {
   console.log('start');
-  const pat = calculateHapticPattern(
+  const pat = calculateLinearHapticPattern(
     elementX.value,
     elementWidth.value - elementX.value,
+    elementY.value,
+    elementHeight.value - elementY.value,
     props.step
   );
   crocotile.send('P', JSON.stringify(pat));

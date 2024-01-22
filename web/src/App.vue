@@ -13,7 +13,7 @@ const crocotile = useCrocotile();
 <template>
   <v-layout>
     <v-app-bar>
-      <v-app-bar-title>Experiment Environment</v-app-bar-title>
+      <v-app-bar-title>Crocotile | Experimental Environment</v-app-bar-title>
       <ConnectionButton />
       <v-btn icon @click="openSerialMonitor = true">
         <v-icon icon="mdi-serial-port"></v-icon>

@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import { useMouseInElement } from '@vueuse/core';
 import { encode } from '@msgpack/msgpack';
-import { calculateHapticPattern, type HapticPattern } from '@/models/hapticPattern';
+import { calculateLinearHapticPattern, type HapticPattern } from '@/models/hapticPattern';
 
 const enc = new TextEncoder();
 
@@ -39,7 +39,7 @@ const write = (command: string, data: string = '') => {
 const startPattern = (e: MouseEvent) => {
   console.log('start');
   if (!e.target) return;
-  const pat = calculateHapticPattern(
+  const pat = calculateLinearHapticPattern(
     elementX.value,
     elementWidth.value - elementX.value,
     props.step

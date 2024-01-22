@@ -1,6 +1,5 @@
 import { until } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { watchEffect } from 'vue';
 import { computed } from 'vue';
 import { ref } from 'vue';
 
@@ -62,10 +61,13 @@ export const useCrocotile = defineStore('crocotile', () => {
 
   async function logger() {
     while (online.value && port.value && port.value.readable) {
+      if (toClose.value) {
+        toClose.value = true;
+        return;
+      }
       reader.value = port.value.readable.getReader();
       try {
         while (true) {
-          if (toClose.value) return;
           const { value, done } = await reader.value.read();
           if (done) {
             // |reader| がキャンセルされました。
