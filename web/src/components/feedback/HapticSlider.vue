@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, watchEffect, nextTick } from 'vue';
 import { useEventListener, useIntervalFn, useMouseInElement } from '@vueuse/core';
 import { calculateLinearHapticPattern } from '@/models/hapticPattern';
 import { useCrocotile } from '@/states/crocotile';
-import { watchEffect } from 'vue';
 
 const props = defineProps<{
   modelValue: number;
@@ -14,6 +13,12 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', v: number): void;
 }>();
+
+const localValue = ref(props.modelValue);
+watch(props, async () => {
+  await nextTick();
+  localValue.value = props.modelValue;
+});
 
 const crocotile = useCrocotile();
 
@@ -48,6 +53,10 @@ function startPattern() {
 function stopPattern() {
   console.log('stop');
   crocotile.send('N');
+
+  if (localValue.value !== props.modelValue) {
+    emit('update:modelValue', localValue.value);
+  }
 }
 
 function revisePosition() {
@@ -59,13 +68,21 @@ function revisePosition() {
 
 <template>
   <v-slider
-    :modelValue="modelValue"
-    @update:modelValue="(v) => emit('update:modelValue', v)"
+    :modelValue="localValue"
+    @update:modelValue="(v) => (localValue = v)"
     @mousedown="startPattern"
     :min="min"
     :max="max"
     :step="step"
     show-ticks="always"
+    tick-size="4"
     ref="sliderEl"
-  ></v-slider>
+  >
+    <template #prepend>
+      {{ min }}
+    </template>
+    <template #append>
+      {{ max }}
+    </template>
+  </v-slider>
 </template>
