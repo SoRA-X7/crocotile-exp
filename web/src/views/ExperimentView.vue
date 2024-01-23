@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import HapticSlider from '@/components/feedback/HapticSlider.vue';
 import { linearCases, type ExperimentResult } from '@/models/experimentCases';
-import { nextTick } from 'vue';
 import { watchEffect } from 'vue';
 import { computed } from 'vue';
 import { ref } from 'vue';
@@ -30,6 +29,12 @@ watchEffect(() => {
       currentResult.value = { time: 0, undergoes: 0, overruns: 0 };
       overlay.value = false;
     }, 1000);
+  }
+});
+
+watchEffect(() => {
+  if (done.value) {
+    console.log(results);
   }
 });
 </script>
