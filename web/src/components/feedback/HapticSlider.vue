@@ -68,23 +68,29 @@ function stopPattern() {
 }
 
 function revisePosition() {
-  return;
+  // return;
   const dx = elementX.value - mousePosXOnStart.value;
   const dy = elementY.value - mousePosYOnStart.value;
-  console.log(dx, dy);
+  // console.log(dx, dy);
   crocotile.send('R', `${JSON.stringify(dx)},${JSON.stringify(dy)}`);
 }
 
-const preview = ref(0);
 watchEffect(() => {
-  if (isOutside.value) return;
+  // if (isOutside.value) return;
   if (!currentPattern.value) return;
-  const strength = testHaptic(
+  const strengthX = testHaptic(
+    0,
     currentPattern.value,
     elementX.value / 400,
     mousePosXOnStart.value / 400
   );
-  console.log(strength);
+  const strengthY = testHaptic(
+    1,
+    currentPattern.value,
+    elementY.value / 400,
+    mousePosYOnStart.value / 400
+  );
+  console.log(strengthX, strengthY);
 });
 </script>
 

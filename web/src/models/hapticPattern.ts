@@ -38,25 +38,32 @@ export function calculateLinearHapticPattern(
     yPos,
     steps,
     bumps,
-    intensityX: 10,
+    intensityX: 3,
     intensityY: 0
   };
 }
 
-export function testHaptic(pat: HapticPattern, angle: number, mouseOffset: number): number {
-  const direction = 0;
+function softlin(x: number): number {
+  return (Math.tanh(x - 2) + 1) / 2;
+}
 
+export function testHaptic(
+  direction: number,
+  pat: HapticPattern,
+  angle: number,
+  mouseOffset: number
+): number {
   const neg = direction == 0 ? pat.xNeg : pat.yNeg;
   const pos = direction == 0 ? pat.xPos : pat.yPos;
 
   const dt = (angle - mouseOffset) * 400; // 400 = sens
 
   let strength = 0;
-  const deadzone = 30;
+  const deadzone = direction == 0 ? -30 : 100;
   if (dt < neg - deadzone) {
-    strength = 1 * (neg - dt);
+    strength = 10 * softlin(-(dt - (neg - deadzone)));
   } else if (dt > pos + deadzone) {
-    strength = -1 * (dt - pos);
+    strength = -10 * softlin(dt - (pos + deadzone));
   } else {
     for (let i = 0; i < pat.bumps.length; i++) {
       const bump = pat.bumps[i];
