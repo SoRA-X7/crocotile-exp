@@ -16,6 +16,8 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   (e: 'update:modelValue', v: number): void;
+  (e: 'start'): void;
+  (e: 'end'): void;
 }>();
 
 const localValue = ref(props.modelValue);
@@ -55,6 +57,7 @@ function startPattern() {
   mousePosXOnStart.value = elementX.value;
   mousePosYOnStart.value = elementY.value;
   currentPattern.value = pat;
+  emit('start');
 }
 
 function stopPattern() {
@@ -65,6 +68,7 @@ function stopPattern() {
     emit('update:modelValue', localValue.value);
   }
   currentPattern.value = null;
+  emit('end');
 }
 
 function revisePosition() {
@@ -90,7 +94,7 @@ watchEffect(() => {
     elementY.value / 400,
     mousePosYOnStart.value / 400
   );
-  console.log(strengthX, strengthY);
+  // console.log(strengthX, strengthY);
 });
 </script>
 
