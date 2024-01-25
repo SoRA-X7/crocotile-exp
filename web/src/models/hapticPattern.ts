@@ -1,45 +1,44 @@
 export interface HapticPattern {
-  xNeg: number;
-  xPos: number;
-  yNeg: number;
-  yPos: number;
+  xMin: number;
+  xMax: number;
+  yMin: number;
+  yMax: number;
   steps: number;
   bumps: Bump[];
-  intensityX: number;
-  intensityY: number;
+  intensity: number;
 }
 
 export interface Bump {
-  x: number;
-  y: number;
+  direction: number;
+  t: number;
   strength: number;
-  curveX: number;
-  curveY: number;
+  curve: number;
 }
 
 export function calculateLinearHapticPattern(
-  xNeg: number,
-  xPos: number,
-  yNeg: number,
-  yPos: number,
+  direction: number,
+  xMin: number,
+  xMax: number,
+  yMin: number,
+  yMax: number,
   steps: number
 ): HapticPattern {
+  const min = direction === 0 ? xMin : yMin;
+  const max = direction === 0 ? xMax : yMax;
   const bumps: Bump[] = [...Array(steps - 1).keys()].map((i) => ({
-    x: (xNeg * (steps - 1.5 - i) + xPos * (i + 0.5)) / (steps - 1),
-    y: (yNeg * (steps - 1.5 - i) + yPos * (i + 0.5)) / (steps - 1),
+    direction,
+    t: (min * (steps - 1.5 - i) + max * (i + 0.5)) / (steps - 1),
     strength: 1,
-    curveX: (xPos - xNeg) / (steps - 1) / 2,
-    curveY: (yPos - yNeg) / (steps - 1) / 2
+    curve: (max - min) / (steps - 1) / 2
   }));
   return {
-    xNeg,
-    xPos,
-    yNeg,
-    yPos,
+    xMin,
+    xMax,
+    yMin,
+    yMax,
     steps,
     bumps,
-    intensityX: 3,
-    intensityY: 0
+    intensity: 3
   };
 }
 
@@ -53,8 +52,8 @@ export function testHaptic(
   angle: number,
   mouseOffset: number
 ): number {
-  const neg = direction == 0 ? pat.xNeg : pat.yNeg;
-  const pos = direction == 0 ? pat.xPos : pat.yPos;
+  const neg = direction == 0 ? pat.xMin : pat.yMin;
+  const pos = direction == 0 ? pat.xMax : pat.yMax;
 
   const dt = (angle - mouseOffset) * 400; // 400 = sens
 
@@ -67,15 +66,17 @@ export function testHaptic(
   } else {
     for (let i = 0; i < pat.bumps.length; i++) {
       const bump = pat.bumps[i];
-      const curve = direction == 0 ? bump.curveX : bump.curveY;
-      const t = dt - (direction == 0 ? bump.x : bump.y);
+      if (direction !== bump.direction) continue;
+
+      const curve = bump.curve;
+      const t = dt - bump.t;
       let s = 0;
       if (-curve < t && t < 0) {
         s += (bump.strength * (-t - curve)) / curve;
       } else if (0 < t && t < curve) {
         s += (bump.strength * (-t + curve)) / curve;
       }
-      s *= direction == 0 ? pat.intensityX : pat.intensityY;
+      s *= pat.intensity;
       strength += s;
     }
   }

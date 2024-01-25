@@ -46,6 +46,7 @@ useEventListener(window, 'mouseup', (e) => {
 function startPattern() {
   console.log('start');
   const pat = calculateLinearHapticPattern(
+    0,
     -elementX.value,
     elementWidth.value - elementX.value,
     -elementY.value,
