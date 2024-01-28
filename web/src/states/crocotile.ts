@@ -6,7 +6,8 @@ import { ref } from 'vue';
 type CrocotileCommand =
   | 'P' // set linear haptic pattern
   | 'N' // revoke pattern
-  | 'R'; // revise cursor position
+  | 'R' // revise cursor position
+  | 'S'; // set sensitivity
 
 export const useCrocotile = defineStore('crocotile', () => {
   const port = ref<SerialPort | null>(null);

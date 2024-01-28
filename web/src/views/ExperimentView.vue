@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import HapticSlider from '@/components/feedback/HapticSlider.vue';
-import { linearCases, type ExperimentResult } from '@/models/experimentCases';
+import { linearCases, randomizedCases, type ExperimentResult } from '@/models/experimentCases';
 import { reactive, watchEffect } from 'vue';
 import { computed } from 'vue';
 import { ref } from 'vue';
 import { stringify as csvStringify } from 'csv-stringify/browser/esm/sync';
 import CountdownSpinner from '@/components/CountdownSpinner.vue';
+import { useCrocotile } from '@/states/crocotile';
 
-const localCases = [...linearCases];
+const localCases = randomizedCases();
 
-const state = ref<'preparation' | 'countdown' | 'ongoing'>('preparation');
+const state = ref<'preparation' | 'countdown' | 'ongoing' | 'result'>('preparation');
+const crocotile = useCrocotile();
 
 const participant = ref('');
+const sensitivity = ref(400);
 
 const caseIndex = ref(0);
 const done = computed(() => caseIndex.value === localCases.length);
@@ -25,6 +28,12 @@ const currentVal = ref(1);
 const results: ExperimentResult[] = [];
 
 const overlay = ref(false);
+
+const iconColor = computed(() => (currentCase.value?.mode ? 'primary' : 'black'));
+
+function sendSensitivity() {
+  crocotile.send('S', JSON.stringify(sensitivity.value));
+}
 
 function timerStart() {
   startTime.value ??= Date.now();
@@ -70,6 +79,7 @@ watchEffect(() => {
       header: true
     });
     download(csv, `croc-exp-${participant.value}.csv`);
+    state.value = 'result';
   }
 });
 </script>
@@ -79,6 +89,12 @@ watchEffect(() => {
       <v-container style="max-width: 400px">
         <v-row>
           <v-text-field v-model="participant" label="Participant ID"></v-text-field>
+        </v-row>
+        <v-row>
+          <v-slider v-model="sensitivity" min="100" max="3200" step="100" @end="sendSensitivity">
+            <template #prepend>感度</template>
+            <template #append>{{ sensitivity }}</template>
+          </v-slider>
         </v-row>
         <v-row class="justify-center">
           <v-btn size="large" color="primary" @click="state = 'countdown'">Start</v-btn>
@@ -103,6 +119,7 @@ watchEffect(() => {
             :min="1"
             :max="currentCase.dots"
             :step="1"
+            :hapticDisabled="currentCase.mode === 0"
             :track-size="12"
             :thumb-size="28"
             thumb-label
@@ -110,12 +127,23 @@ watchEffect(() => {
           />
         </div>
       </v-row>
+      <v-row>
+        <v-icon icon="mdi-mouse" :color="iconColor" />
+      </v-row>
       <v-overlay :model-value="overlay" class="align-center justify-center" persistent>
         <v-card class="pa-16">
           <v-icon color="success" icon="mdi-check-bold" />
           正解
         </v-card>
       </v-overlay>
+    </div>
+    <div v-else-if="state === 'result'">
+      <p>実験は以上です。ご協力ありがとうございました。</p>
+      <br />
+      <v-img
+        src="https://web.sfc.keio.ac.jp/~t21436mt/qr20240125155919607.png"
+        :width="300"
+      ></v-img>
     </div>
   </v-container>
 </template>

@@ -32,10 +32,10 @@ export function calculateLinearHapticPattern(
     curve: (max - min) / (steps - 1) / 2
   }));
   return {
-    xMin,
-    xMax,
-    yMin,
-    yMax,
+    xMin: xMin - 10,
+    xMax: xMax + 10,
+    yMin: yMin - 30,
+    yMax: yMax + 30,
     steps,
     bumps,
     intensity: 3

@@ -13,6 +13,7 @@ const props = defineProps<{
   min: number;
   max: number;
   step: number;
+  hapticDisabled: boolean;
 }>();
 const emit = defineEmits<{
   (e: 'update:modelValue', v: number): void;
@@ -54,16 +55,20 @@ function startPattern() {
     props.max
   );
   console.log(pat);
-  crocotile.send('P', JSON.stringify(pat));
+  if (!props.hapticDisabled) {
+    crocotile.send('P', JSON.stringify(pat));
+  }
   mousePosXOnStart.value = elementX.value;
   mousePosYOnStart.value = elementY.value;
-  currentPattern.value = pat;
   emit('start');
+  currentPattern.value = pat;
 }
 
 function stopPattern() {
   console.log('stop');
-  crocotile.send('N');
+  if (!props.hapticDisabled) {
+    crocotile.send('N');
+  }
 
   if (localValue.value !== props.modelValue) {
     emit('update:modelValue', localValue.value);
